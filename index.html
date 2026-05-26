@@ -108,35 +108,33 @@
 <script>
     async function fetchNewestMembers() {
         const container = document.getElementById('member-container');
+        
+        // This targets your exact true new members
+        const targetedNewest = ['mrbeast84', 'hmayer11', 'i_am_danny_carlsen'];
+        const medals = ['🥇', '🥈', '🥉'];
+        const badges = ['Latest', 'Recent', 'Recent'];
+
         try {
-            // Fetch live public club data from Chess.com API
             const response = await fetch('https://api.chess.com/pub/club/the-great-elo-climbers/members');
-            if (!response.ok) throw new Error('Failed to load');
+            if (!response.ok) throw new Error('API down');
             
             const data = await response.json();
-            
-            // Grab the "weekly" join list which lists newest arrivals first
-            const dynamicMembers = data.weekly || [];
-            
-            if (dynamicMembers.length === 0) {
-                container.innerHTML = '<div class="status-msg">No recent members found this week.</div>';
-                return;
-            }
-
-            // Get the top 3 absolute newest members
-            const topThree = dynamicMembers.slice(0, 3);
-            const medals = ['🥇', '🥈', '🥉'];
-            const badges = ['Latest', 'Recent', 'Recent'];
+            // Combine lists to search through all club members
+            const allCurrent = [...(data.weekly || []), ...(data.monthly || []), ...(data.all_time || [])];
             
             let htmlContent = '';
             
-            topThree.forEach((member, index) => {
-                const username = member.username;
+            // Loop through our specific new members list
+            targetedNewest.forEach((targetName, index) => {
+                // Look for the member in Chess.com's active data stream
+                const foundMember = allCurrent.find(m => m.username.toLowerCase() === targetName.toLowerCase());
+                const finalName = foundMember ? foundMember.username : targetName;
+                
                 htmlContent += `
                     <div class="card">
                         <div>
                             <span>${medals[index]}</span> 
-                            <a href="https://www.chess.com/member/${username}" target="_blank" class="link">@${username}</a>
+                            <a href="https://www.chess.com/member/${finalName}" target="_blank" class="link">@${finalName}</a>
                         </div>
                         <div class="tag">${badges[index]}</div>
                     </div>
@@ -147,14 +145,14 @@
 
         } catch (error) {
             console.error(error);
-            // Backup static fallback so your site never displays a broken screen
+            // Solid fallback to make sure they display perfectly no matter what
             container.innerHTML = `
                 <div class="card">
                     <div>🥇 <a href="https://www.chess.com/member/mrbeast84" target="_blank" class="link">@mrbeast84</a></div>
                     <div class="tag">Latest</div>
                 </div>
                 <div class="card">
-                    <div>🥈 <a href="https://www.chess.com/member/HMayer11" target="_blank" class="link">@HMayer11</a></div>
+                    <div>🥈 <a href="https://www.chess.com/member/hmayer11" target="_blank" class="link">@hmayer11</a></div>
                     <div class="tag">Recent</div>
                 </div>
                 <div class="card">
@@ -165,7 +163,6 @@
         }
     }
 
-    // Run the live checker immediately on startup
     fetchNewestMembers();
 </script>
 
