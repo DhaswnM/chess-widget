@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Great ELO Climbers - Live Members</title>
+    <title>The Great ELO Climbers - Recent Members</title>
     <style>
         body {
             background-color: #000000;
@@ -18,6 +18,7 @@
             max-width: 600px;
             width: 100%;
         }
+        /* BOX 6 DESIGN STACK */
         .box-6 {
             background-color: #1a1a1a;
             border: 2px solid #d4af37;
@@ -42,6 +43,7 @@
             margin: -5px 0 20px 0;
             font-style: italic;
         }
+        /* RECENT MEMBER CARDS */
         .member-card {
             margin: 12px 0;
             padding: 14px;
@@ -68,84 +70,62 @@
             font-size: 15px;
             text-decoration: none;
         }
-        .status-msg {
+        .time-badge {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 11px;
+            background-color: #2b2b2b;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            letter-spacing: 0.5px;
+        }
+        .portal-btn {
+            display: block;
+            background-color: #4a3e0b;
+            color: #ffe680;
+            padding: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 2px solid #d4af37;
+            letter-spacing: 0.5px;
             text-align: center;
-            padding: 30px;
-            color: #888888;
-            font-style: italic;
-            font-size: 14px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+
     <div class="box-6">
-        <h3>👥 LIVE CLUB MEMBERS</h3>
-        <p class="subtitle">Live Global Roster • Automatically updated via Chess.com</p>
-        <div id="live-feed-container">
-            <div id="loading-state" class="status-msg">
-                🔍 Loading live member roster...
+        <h3>🌿 NEWEST CLUB ARRIVALS</h3>
+        <p class="subtitle">The Great ELO Climbers Recent Roster</p>
+        
+        <div class="member-card">
+            <div class="username-side">
+                <span class="chess-icon">♟</span>
+                <a href="https://www.chess.com/member/hridansh2022" target="_blank" class="profile-link">@hridansh2022</a>
             </div>
+            <div class="time-badge">Latest Member</div>
         </div>
+
+        <div class="member-card">
+            <div class="username-side">
+                <span class="chess-icon">♟</span>
+                <a href="https://www.chess.com/member/hmayer11" target="_blank" class="profile-link">@hmayer11</a>
+            </div>
+            <div class="time-badge">Recent Member</div>
+        </div>
+
+        <a href="https://www.chess.com/clubs/members/the-great-elo-climbers" target="_blank" class="portal-btn">
+            👥 VIEW LIVE SIDEBAR ACTIVITY FEED
+        </a>
     </div>
+
 </div>
 
-<script>
-    async function fetchClubMembers() {
-        const feedContainer = document.getElementById('live-feed-container');
-        
-        try {
-            // Using a reliable open proxy to bypass CORS security barriers
-            const targetUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.chess.com/pub/club/the-great-elo-climbers/members');
-            const response = await fetch(targetUrl);
-            
-            if (!response.ok) throw new Error("Proxy connection failed");
-            
-            const wrapper = await response.json();
-            const payload = JSON.parse(wrapper.contents);
-            
-            // Gather all available public member records
-            let allClubMembers = [];
-            if (payload.weekly) allClubMembers = allClubMembers.concat(payload.weekly);
-            if (payload.monthly) allClubMembers = allClubMembers.concat(payload.monthly);
-            if (payload.all_time) allClubMembers = allClubMembers.concat(payload.all_time);
-            
-            // Deduplicate usernames
-            const tracker = new Set();
-            const uniqueMembers = allClubMembers.filter(m => {
-                if (!m.username || tracker.has(m.username)) return false;
-                tracker.add(m.username);
-                return true;
-            });
-            
-            if (uniqueMembers.length === 0) throw new Error("No members found");
-            
-            // Cut the list down to show 6 real members on screen
-            const displayingMembers = uniqueMembers.slice(0, 6);
-            
-            feedContainer.innerHTML = ''; // Wipe loading message
-            
-            displayingMembers.forEach(member => {
-                const card = document.createElement('div');
-                card.className = 'member-card';
-                card.innerHTML = `
-                    <div class="username-side">
-                        <span class="chess-icon">♟</span>
-                        <a href="https://www.chess.com/member/${member.username}" target="_blank" class="profile-link">@${member.username}</a>
-                    </div>
-                    <div style="color: #aa8010; font-size: 12px; font-weight: bold;">Active Member</div>
-                `;
-                feedContainer.appendChild(card);
-            });
-            
-        } catch (error) {
-            console.error(error);
-            feedContainer.innerHTML = '<div class="status-msg" style="color: #ffaa00;">⚠️ Chess.com API is rate-limiting requests. Refresh in a few seconds!</div>';
-        }
-    }
-    
-    fetchClubMembers();
-</script>
 </body>
 </html>
