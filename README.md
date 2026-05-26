@@ -68,15 +68,6 @@
             font-size: 15px;
             text-decoration: none;
         }
-        .time-badge {
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 11px;
-            background-color: #2b2b2b;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #444;
-        }
         .status-msg {
             text-align: center;
             padding: 30px;
@@ -89,42 +80,38 @@
 <body>
 
 <div class="container">
-
     <div class="box-6">
-        <h3>🌿 NEWEST CLUB ARRIVALS</h3>
-        <p class="subtitle">Live Global Feed • Automatically updated via Chess.com APIs</p>
-        
+        <h3>👥 LIVE CLUB MEMBERS</h3>
+        <p class="subtitle">Live Global Roster • Automatically updated via Chess.com</p>
         <div id="live-feed-container">
             <div id="loading-state" class="status-msg">
-                🔍 Connecting to Chess.com data streams...
+                🔍 Loading live member roster...
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
-    async function fetchNewestMembers() {
+    async function fetchClubMembers() {
         const feedContainer = document.getElementById('live-feed-container');
         
         try {
-            // Target url
-            const targetUrl = 'https://api.chess.com/pub/club/the-great-elo-climbers/members';
+            // Using a reliable open proxy to bypass CORS security barriers
+            const targetUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://api.chess.com/pub/club/the-great-elo-climbers/members');
+            const response = await fetch(targetUrl);
             
-            // Bypassing browser CORS completely using a direct layout bypass proxy
-            const response = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(targetUrl));
+            if (!response.ok) throw new Error("Proxy connection failed");
             
-            if (!response.ok) throw new Error("Proxy connection dropped");
+            const wrapper = await response.json();
+            const payload = JSON.parse(wrapper.contents);
             
-            const payload = await response.json();
-            
-            // Gather all entries from all-time lists
+            // Gather all available public member records
             let allClubMembers = [];
             if (payload.weekly) allClubMembers = allClubMembers.concat(payload.weekly);
             if (payload.monthly) allClubMembers = allClubMembers.concat(payload.monthly);
             if (payload.all_time) allClubMembers = allClubMembers.concat(payload.all_time);
             
-            // Remove duplicates
+            // Deduplicate usernames
             const tracker = new Set();
             const uniqueMembers = allClubMembers.filter(m => {
                 if (!m.username || tracker.has(m.username)) return false;
@@ -132,22 +119,14 @@
                 return true;
             });
             
-            // Sort by UNIX timestamp (Newest members first)
-            uniqueMembers.sort((first, second) => second.joined - first.joined);
+            if (uniqueMembers.length === 0) throw new Error("No members found");
             
-            // Slice top 5 newest
-            const topFreshArrivals = uniqueMembers.slice(0, 5);
+            // Cut the list down to show 6 real members on screen
+            const displayingMembers = uniqueMembers.slice(0, 6);
             
-            feedContainer.innerHTML = ''; // Wipe out loading message
+            feedContainer.innerHTML = ''; // Wipe loading message
             
-            topFreshArrivals.forEach(member => {
-                const joinDate = new Date(member.joined * 1000);
-                const readableDate = joinDate.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-                
+            displayingMembers.forEach(member => {
                 const card = document.createElement('div');
                 card.className = 'member-card';
                 card.innerHTML = `
@@ -155,19 +134,18 @@
                         <span class="chess-icon">♟</span>
                         <a href="https://www.chess.com/member/${member.username}" target="_blank" class="profile-link">@${member.username}</a>
                     </div>
-                    <div class="time-badge">Joined: ${readableDate}</div>
+                    <div style="color: #aa8010; font-size: 12px; font-weight: bold;">Active Member</div>
                 `;
                 feedContainer.appendChild(card);
             });
             
         } catch (error) {
             console.error(error);
-            feedContainer.innerHTML = '<div class="status-msg" style="color: #ffaa00;">⚠️ Temporary API lag. Please refresh the page in a few seconds!</div>';
+            feedContainer.innerHTML = '<div class="status-msg" style="color: #ffaa00;">⚠️ Chess.com API is rate-limiting requests. Refresh in a few seconds!</div>';
         }
     }
     
-    fetchNewestMembers();
+    fetchClubMembers();
 </script>
-
 </body>
 </html>
