@@ -3,47 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Great ELO Climbers - Roster</title>
+    <title>The Great ELO Climbers Roster</title>
     <style>
         body {
             background-color: #000000;
             color: #ffffff;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
         }
-        .main-panel {
+        .panel {
             width: 100%;
             max-width: 450px;
             background-color: #1a1a1a;
             border: 2px solid #d4af37;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
         }
-        .title-area {
+        .header {
             text-align: center;
             border-bottom: 1px solid #333;
-            padding-bottom: 12px;
+            padding-bottom: 10px;
             margin-bottom: 15px;
         }
-        .title-area h2 {
+        .header h2 {
             color: #d4af37;
             margin: 0;
             font-size: 20px;
-            letter-spacing: 1px;
         }
-        .title-area p {
-            color: #888888;
-            font-size: 12px;
-            margin: 5px 0 0 0;
-            font-style: italic;
-        }
-        .row-item {
+        .card {
             margin: 10px 0;
             padding: 12px;
             background-color: #111111;
@@ -54,30 +44,12 @@
             justify-content: space-between;
             align-items: center;
         }
-        .user-block {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .rank-icon {
-            font-size: 14px;
-        }
-        .user-link {
+        .link {
             color: #ffe680;
             font-weight: bold;
-            font-size: 15px;
             text-decoration: none;
         }
-        .tag {
-            color: #ffffff;
-            font-size: 11px;
-            background-color: #2b2b2b;
-            padding: 3px 8px;
-            border-radius: 3px;
-            border: 1px solid #444;
-            font-weight: bold;
-        }
-        .global-link {
+        .btn {
             display: block;
             background-color: #222222;
             color: #d4af37;
@@ -85,20 +57,40 @@
             padding: 12px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 13px;
             border-radius: 4px;
             border: 1px solid #d4af37;
             margin-top: 15px;
-        }
-        .global-link:hover {
-            background-color: #d4af37;
-            color: #000000;
         }
     </style>
 </head>
 <body>
 
-<div class="main-panel">
+<div class="panel">
 
-    <div class="title-area">
-        <h2>🌿
+    <div class="header">
+        <h2>🌿 NEWEST CLUB ARRIVALS</h2>
+    </div>
+    
+    <div class="card">
+        <div>🥇 <a href="https://www.chess.com/member/mrbeast84" target="_blank" class="link">@mrbeast84</a></div>
+        <div style="font-size: 11px; color: #888;">Latest</div>
+    </div>
+
+    <div class="card">
+        <div>🥈 <a href="https://www.chess.com/member/HMayer11" target="_blank" class="link">@HMayer11</a></div>
+        <div style="font-size: 11px; color: #888;">Recent</div>
+    </div>
+
+    <div class="card">
+        <div>🥉 <a href="https://www.chess.com/member/i_am_danny_carlsen" target="_blank" class="link">@i_am_danny_carlsen</a></div>
+        <div style="font-size: 11px; color: #888;">Recent</div>
+    </div>
+
+    <a href="https://www.chess.com/clubs/members/the-great-elo-climbers" target="_blank" class="btn">
+        👥 VIEW ALL MEMBERS
+    </a>
+
+</div>
+
+</body>
+</html>
